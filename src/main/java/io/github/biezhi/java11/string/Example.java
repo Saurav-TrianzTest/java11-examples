@@ -1,5 +1,8 @@
 package io.github.biezhi.java11.string;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.stream.Collectors;
 
 /**
@@ -10,23 +13,29 @@ import java.util.stream.Collectors;
  * String.stripTrailing()
  * String.isBlank()
  *
+ * Cloud-ready version with structured logging for AWS CloudWatch
+ *
  * @author biezhi
  * @date 2018/7/10
  */
 public class Example {
 
+    private static final Logger logger = LoggerFactory.getLogger(Example.class);
+
     /**
      * Write provided {@code String} in header. Note that this
      * implementation uses {@code String.repeat(int)}.
+     *
+     * Cloud improvement: Uses SLF4J structured logging instead of System.out
      *
      * @param headerText Title of header.
      */
     private static void writeHeader(final String headerText) {
         final String headerSeparator = "=".repeat(headerText.length() + 4);
 
-        System.out.println("\n" + headerSeparator);
-        System.out.println(headerText);
-        System.out.println(headerSeparator);
+        logger.info("\n{}", headerSeparator);
+        logger.info("{}", headerText);
+        logger.info("{}", headerSeparator);
     }
 
 
@@ -40,7 +49,7 @@ public class Example {
 
         writeHeader("String.lines() on '" + stringWithoutLineSeparators + "'");
 
-        originalString.lines().forEach(System.out::println);
+        originalString.lines().forEach(line -> logger.info("{}", line));
     }
 
     /**
@@ -50,7 +59,7 @@ public class Example {
         String originalString = "  biezhi.me  23333  ";
 
         writeHeader("String.strip() on '" + originalString + "'");
-        System.out.println("'" + originalString.strip() + "'");
+        logger.info("'{}'", originalString.strip());
     }
 
     /**
@@ -60,7 +69,7 @@ public class Example {
         String originalString = "  biezhi.me  23333  ";
 
         writeHeader("String.stripLeading() on '" + originalString + "'");
-        System.out.println("'" + originalString.stripLeading() + "'");
+        logger.info("'{}'", originalString.stripLeading());
     }
 
     /**
@@ -70,7 +79,7 @@ public class Example {
         String originalString = "  biezhi.me  23333  ";
 
         writeHeader("String.stripTrailing() on '" + originalString + "'");
-        System.out.println("'" + originalString.stripTrailing() + "'");
+        logger.info("'{}'", originalString.stripTrailing());
     }
 
     /**
@@ -80,16 +89,16 @@ public class Example {
         writeHeader("String.isBlank()");
 
         String emptyString = "";
-        System.out.println("空字符串    -> " + emptyString.isBlank());
+        logger.info("空字符串    -> {}", emptyString.isBlank());
 
         String onlyLineSeparator = System.getProperty("line.separator");
-        System.out.println("换行符     -> " + onlyLineSeparator.isBlank());
+        logger.info("换行符     -> {}", onlyLineSeparator.isBlank());
 
         String tabOnly = "\t";
-        System.out.println("Tab 制表符 -> " + tabOnly.isBlank());
+        logger.info("Tab 制表符 -> {}", tabOnly.isBlank());
 
         String spacesOnly = "   ";
-        System.out.println("空格       -> " + spacesOnly.isBlank());
+        logger.info("空格       -> {}", spacesOnly.isBlank());
     }
 
 
@@ -98,7 +107,7 @@ public class Example {
 
         String str = "Hello \n World, I,m\nbiezhi.";
 
-        System.out.println(str.lines().collect(Collectors.toList()));
+        logger.info("{}", str.lines().collect(Collectors.toList()));
     }
 
     public static void main(String[] args) {
